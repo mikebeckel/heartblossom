@@ -1,0 +1,81 @@
+databaseChangeLog:
+  - preConditions:
+      - dbms:
+          type: postgresql
+  - changeSet:
+      id: 1
+      author: beckel
+      changes:
+        - createTable:
+            tableName: devices
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(16)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: mac_address
+                  type: varchar(16)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: operating_system
+                  type: varchar(16)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: memory
+                  type: int
+                  constraints:
+                    nullable: false
+        - createTable:
+            tableName: schedules
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: device_id
+                  type: int
+                  constraints:
+                    foreignKey:
+                      referencedColumnNames: id
+                      referencedTableName: users
+                    nullable: false
+              - column:
+                  name: start_time
+                  type: timestamp
+                  constraints:
+                    nullable: false
+              - column:
+                  name: event
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: 2
+      author: beckel
+      changes:
+      - addForeignKeyConstraint:
+            baseColumnNames: device_id
+            baseTableName: schedules
+            constraintName: fk_device_id
+            deferrable: true
+            initiallyDeferred: true
+            onDelete: CASCADE
+            onUpdate: RESTRICT
+            referencedColumnNames: id
+            referencedTableName: devices
